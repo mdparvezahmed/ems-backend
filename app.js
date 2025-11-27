@@ -47,9 +47,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle preflight requests explicitly
-app.options('/*', cors(corsOptions));
-
 app.use(express.json());
 
 // Serve static files from public/uploads directory
@@ -57,7 +54,7 @@ app.use('/uploads', express.static('public/uploads'));
 
 
 //routes
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
     res.send("server is running...");
 });
 app.use("/api/auth", authRoutes);
@@ -118,7 +115,13 @@ generateDailyTokenIfMissing().catch(console.error).finally(scheduleDailyGenerati
 
 
 //run server
-app.listen(PORT, () => {
-    console.log(`Server running at port: ${PORT}`);
-    console.log('CORS allowed origins:', CLIENT_URLS.join(', '));
-});
+// Only start server if not in Vercel (serverless) environment
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Server running at port: ${PORT}`);
+        console.log('CORS allowed origins:', CLIENT_URLS.join(', '));
+    });
+}
+
+// Export for Vercel
+module.exports = app;
