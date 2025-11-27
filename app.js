@@ -55,31 +55,6 @@ app.use(express.json());
 // Serve static files from public/uploads directory
 app.use('/uploads', express.static('public/uploads'));
 
-// Request logging middleware
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
-    next();
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'OK', 
-        message: 'Server is running',
-        timestamp: new Date().toISOString(),
-        allowedOrigins: CLIENT_URLS
-    });
-});
-
-// API health check
-app.get('/api/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'OK', 
-        message: 'API is running',
-        timestamp: new Date().toISOString()
-    });
-});
-
 
 //routes
 app.use("/", (req, res) => {
